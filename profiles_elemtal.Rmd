@@ -1,0 +1,252 @@
+---
+title: "profiles_H2S"
+author: "Edgart Flores"
+date: "4/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+#library(ggstatsplot)
+library(ggplot2)
+library(gganimate)
+library(gapminder)
+library(dataRetrieval)
+require(visreg)
+#require(MASS)
+require(reshape2)
+library(scales)
+library(dplyr)
+library(gridExtra)
+library(ggpubr)
+library(plotly)
+library(ggstatsplot)
+```
+
+```{r pressure, echo=FALSE}
+#gapminder <- read.delim("~/Documents/PARACAS_BABY/data_paper/profiles_elemental_new.csv", sep=",")
+gapminder <- read.delim("~/Documents/PARACAS_BABY/data_paper/profiles_elemental.csv", sep=",")
+```
+
+```{r cars}
+ggplot(gapminder, aes(x=toc, y=tn)) + 
+  geom_point(pch=19, fill="blue", color="darkred", size = 3) + 
+  geom_smooth(method=lm, se=FALSE, fullrange=TRUE, color= "Black",            # Color del borde
+                                    size = 0.5) + 
+  stat_cor(method = "pearson", label.x = 3, label.y = 0.7) +
+  xlab("Corg (wt.%)") + ylab("TN (wt. %)")  + 
+  theme_bw() + 
+  theme(panel.border = element_rect(fill = "transparent", # Necesario para agregar el borde
+                                    color = 1,            # Color del borde
+                                    size = 0.7))            # Ancho del borde
+```
+
+```{r cars}
+fit1 <- lm(gapminder$toc ~ gapminder$tn, data = gapminder)
+summary(fit1)
+
+ggplot(gapminder, aes(x = gapminder$toc, y = gapminder$tn)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+```{r cars}
+library(ggpmisc)
+x <- gapminder$toc
+y <- gapminder$tn
+
+my.formula <- y ~ x
+
+p <- ggplot(data = gapminder, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +         
+  geom_point(shape=19, aes(colour=factor(Stations))) +
+  facet_wrap(~date) + 
+  scale_color_discrete("Stations")
+p
+```
+```{r cars}
+library(ggpmisc)
+x <- gapminder$toc
+y <- gapminder$tn
+
+my.formula <- y ~ x
+
+p <- ggplot(data = gapminder, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Stations, color=Stations, size = Stations))+
+  scale_shape_manual(values=c(15, 19, 17)) +
+  scale_color_manual(values=c('#999999','#E69F00', '#56B4E9')) +
+  scale_size_manual(values=c(4,4,4)) +
+  xlab("Corg (wt.%)") + 
+  ylab("TN (wt. %)") +
+  facet_wrap(~date) 
+p
+```
+
+```{r cars}
+corr <- cor.test(x=gapminder$toc, y=gapminder$tn, method = 'spearman')
+```
+
+```{r cars}
+a <- ggplot(gapminder, aes(toc, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 4)) +
+  scale_y_continuous(trans = "reverse")  +
+  #geom_smooth(aes(group = date), 
+  #            method = "lm", 
+  #            show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TOC (wt. %)") + ylab("Depth") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+a
+```
+
+```{r cars}
+#theme_set(theme_bw())  # pre-set the bw theme.
+
+b <- ggplot(gapminder, aes(tn, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 1)) +
+  scale_y_continuous(trans = "reverse")  +
+  #geom_smooth(aes(group = date), 
+  #            method = "lm", 
+  #            show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TN (wt. %) ") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+b
+```
+
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+c <- ggplot(gapminder, aes(cn, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(1, 8)) +
+  scale_y_continuous(trans = "reverse")  +
+  #geom_smooth(aes(group = date), 
+  #            method = "lm", 
+  #            show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TOC/TN") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+c
+```
+
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+d <- ggplot(gapminder, aes(tic, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 4)) +
+  scale_y_continuous(trans = "reverse")  +
+ # geom_smooth(aes(group = date), 
+ #             method = "lm", 
+ #             show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TIC (wt. %) ") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+d
+```
+
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+e <- ggplot(gapminder, aes(ts, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(1, 2)) +
+  scale_y_continuous(trans = "reverse")  +
+ # geom_smooth(aes(group = date), 
+ #             method = "loess", span = 0.3,
+ #             show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TS (wt. %) ") + ylab("Depth") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+e
+```
+
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+f <- ggplot(gapminder, aes(tocts, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 6)) + 
+  scale_y_continuous(trans = "reverse")  + 
+   #geom_vline(xintercept = 1.5, col='black', lwd=1) +
+#  geom_smooth(aes(group = date), 
+#              method = "lm", 
+#              show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("TOC/TS") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+f
+```
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+g <- ggplot(gapminder, aes(avs, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 0.25)) +
+  scale_y_continuous(trans = "reverse")  +
+#  geom_smooth(aes(group = date), 
+#              method = "lm", 
+#              show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("AVS (%)") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+g
+```
+
+```{r cars}
+theme_set(theme_bw())  # pre-set the bw theme.
+
+h <- ggplot(gapminder, aes(crs, depth, frame = date, color = Stations)) +
+  scale_color_manual(values=c("#999999", "peru", "steelblue"))  +
+    geom_line(orientation = "y") +
+  geom_point() +  
+  coord_cartesian(xlim = c(0, 1.8)) +
+  scale_y_continuous(trans = "reverse")  +
+#  geom_smooth(aes(group = date), 
+#              method = "lm", 
+#              show.legend = FALSE) +
+  facet_wrap(~date, scales = "free", nrow=1, ncol=8) + 
+  xlab("CRS (%)") + ylab(" ") 
+  #scale_x_log10()  # convert to log scale
+  # New facet label names for supp variable
+h
+```
+
+
+```{r cars}
+ggarrange(a, b, c, d, e, f, g, h, 
+          labels = c("A)", "B)", "C)", "D)", "E)", "F)", "G)", "H)"),
+          ncol = 4, nrow = 2)
+```
+
