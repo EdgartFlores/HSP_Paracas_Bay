@@ -10,7 +10,6 @@ require(ggplot2)
 require(visreg)
 require(MASS)
 require(reshape2)
-library(scales)
 library(dplyr)
 library(gridExtra)
 library(ggpubr)
@@ -20,15 +19,11 @@ library(dplyr)
 library(lubridate)
 library(ggpmisc)
 library(scales)
-
-library(dplyr)
 library(plotly)
 ```
 
 ```{r pressure, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
-library(dplyr)
 library(tidyverse)
 library(latex2exp)
 library(readxl)
@@ -37,25 +32,15 @@ library(broom)
 library(devtools)
 library(ggpubr)
 library(tidyverse) 
-library(scales) 
 library(stringr) 
 library(Hmisc) 
 library(forcats) 
 library(ggthemes) 
 ```
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r cars}
-read.csv("~/Documents/PARACAS_BABY/data_paper/DatosPaperEdgart.csv")
-```
-
 ```{r pressure, echo=FALSE}
 #Leemos datos
-table = read.csv(file="~/Documents/PARACAS_BABY/data_paper/DatosPaperEdgart.csv") #Tabla cruda
+table = read.csv(file="~/Documents/data.csv") 
 table$time = as.Date(table$time, format = "%d/%m/%Y")
 
 #Vector de estratificación
