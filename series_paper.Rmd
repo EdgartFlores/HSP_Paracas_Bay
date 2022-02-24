@@ -30,8 +30,6 @@ library(readxl)
 library(here) 
 library(broom)
 library(devtools)
-library(ggpubr)
-library(tidyverse) 
 library(stringr) 
 library(Hmisc) 
 library(forcats) 
@@ -39,9 +37,8 @@ library(ggthemes)
 ```
 
 ```{r pressure, echo=FALSE}
-#Leemos datos
 table = read.csv(file="~/Documents/data.csv") 
-table$time = as.Date(table$time, format = "%d/%m/%Y")
+table$time = as.Date(table$time, format = "%d/%m/%Y") # date format
 
 #Vector de estratificación
 dt = table$ts - table$tf
